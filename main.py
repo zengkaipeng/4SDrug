@@ -95,7 +95,7 @@ if __name__ == '__main__':
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     os.environ['CUDA_VISIBLE_DEVICES'] = str(args.device)
     # device = torch.device("cpu")
-
+    print(device)
     model = Model(pklSet.n_sym, pklSet.n_drug, torch.FloatTensor(pklSet.ddi_adj).to(device), pklSet.sym_sets,
                   torch.tensor(pklSet.drug_multihots).to(device), args.embedding_dim).to(device)
     # model.load_state_dict(torch.load('best_ja_at15.pt', map_location=device))
@@ -138,10 +138,10 @@ if __name__ == '__main__':
             print('-' * 89)
 
             if ja > best_ja:
-                torch.save(model.state_dict(), 'best_ja_at15.pt')
+                torch.save(model.state_dict(), 'best_ja_baseline.pt')
                 best_ja = ja
 
-    model.load_state_dict(torch.load('best_ja_at15.pt', map_location=device))
+    model.load_state_dict(torch.load('best_ja_baseline.pt', map_location=device))
     ja, prauc, avg_p, avg_r, avg_f1, avg_med, ddi_rate = evaluate(model, pklSet.data_eval, pklSet.n_drug, device)
     print('-' * 89)
     print(
