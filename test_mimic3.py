@@ -6,6 +6,7 @@ from tqdm import tqdm
 import argparse
 import os
 from model.mymodel import Model
+from utils.dataset import PKLSet
 import time
 import dill
 
@@ -18,7 +19,7 @@ def eval_one_epoch(model, data_eval, n_drug, device):
         y_gt, y_pred, y_pred_prob, y_pred_label = [], [], [], []
         for adm_idx, adm in enumerate(input_seq):
             syms = torch.tensor(adm[0]).to(device)
-            scores = model.evaluate(syms, device=device)
+            output = model.evaluate(syms, device=device)
 
             y_gt_tmp = np.zeros(n_drug)
             y_gt_tmp[adm[2]] = 1
@@ -71,7 +72,7 @@ if __name__ == '__main__':
     for _ in range(10):
         test_sample = np.random.choice(data_test, sample_size, replace=True)
         ja, prauc, avg_p, avg_r, avg_f1, avg_med, ddi_rate = \
-            eval_one_epoch(model, test_sample, pklSet.n_drug)
+            eval_one_epoch(model, test_sample, pklSet.n_drug, device)
         result.append([ddi_rate, ja, avg_f1, prauc, avg_med])
         print('-' * 89)
         print(

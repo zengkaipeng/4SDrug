@@ -104,6 +104,7 @@ if __name__ == '__main__':
     print("total number of parameters: ", tot_params)
 
     best_ja = -np.inf
+    model_name = f'best_ja_lr_{args.lr}_alpha_{args.alpha}_beta_{args.beta}.pt'
     for epoch in trange(args.epoch):
         losses, set_idx = 0.0, 0
         model.train()
@@ -138,10 +139,10 @@ if __name__ == '__main__':
             print('-' * 89)
 
             if ja > best_ja:
-                torch.save(model.state_dict(), 'best_ja_baseline.pt')
+                torch.save(model.state_dict(), model_name)
                 best_ja = ja
 
-    model.load_state_dict(torch.load('best_ja_baseline.pt', map_location=device))
+    model.load_state_dict(torch.load(model_name, map_location=device))
     ja, prauc, avg_p, avg_r, avg_f1, avg_med, ddi_rate = evaluate(model, pklSet.data_eval, pklSet.n_drug, device)
     print('-' * 89)
     print(
